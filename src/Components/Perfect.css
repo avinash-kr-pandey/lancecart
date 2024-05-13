@@ -1,0 +1,16 @@
+.banner8 h2{
+    text-align: center;
+    padding: 32px;
+    margin-top: 20px;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; 
+      
+}
+.banner8 .img9{
+    display: flex;
+    justify-content: center;
+    justify-content: space-around;
+}
+.img9 img {
+    width: 42%;
+    height: 39%;
+}

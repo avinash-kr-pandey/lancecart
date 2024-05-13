@@ -1,0 +1,17 @@
+.modal-button {
+    position: absolute;
+    padding: 5px 10px;
+    background-color: #ccc;
+    border: 1px solid #888;
+    border-radius: 0 4px 4px 0;
+    color: blue; /* Text color set to blue */
+  }
+  .modal-butn{
+    padding: 5px 10px;
+    border: none;
+    color: red;
+    background: none;
+    margin-left: 490px;
+    font-size: 20px;
+    font-weight: 600;
+  }

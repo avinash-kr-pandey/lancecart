@@ -1,0 +1,27 @@
+
+  .cart1 {
+    display: flex;
+    justify-content: center;
+    justify-content: space-around;
+    margin-top: 11px;
+  }
+  .cart1 .card1{
+    text-align: center;
+  }
+  .cart1 .card1 img{
+          width: 70%;
+  }
+  .card1 button{
+    width: 100px;
+    height: 33px;
+    color: white;
+    background-color: rgb(52,180,180);
+    border-radius: 5px;
+    border: none;
+    font-size: 16px;
+    font-weight: 600;
+  }
+  .card1 p {
+    font-size: 16px;
+    padding: 5px;
+  }
