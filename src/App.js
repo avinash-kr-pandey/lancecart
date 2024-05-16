@@ -1,5 +1,5 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import React from 'react'
+import React, { useState } from 'react'
 import Navbar from './Components/Navbar'
 import Googles from './Components/Googles'
 import Crousel from './Components/Crousel';
@@ -31,10 +31,13 @@ import SigninAndSignup from './Components/SigninAndSignup';
 
 
 function App() {
+
+  const [isShowModal,setIsShowModal]=useState(false)
+
   return (
     <div>
-      <Navbar/>
-      <Googles/>
+      <Navbar isShowModal={isShowModal} setIsShowModal={setIsShowModal}/>
+      <Googles isShowModal={isShowModal} setIsShowModal={setIsShowModal}/>
       <Crousel/>
       <Images/>
       <CardCarusel/>

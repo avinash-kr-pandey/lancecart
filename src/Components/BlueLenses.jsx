@@ -15,4 +15,4 @@ function BlueLenses() {
   )
 }
 
-export default BlueLenses
+export default BlueLenses;

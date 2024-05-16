@@ -3,9 +3,16 @@ import './Navbar.css'
 import { MdAddIcCall } from "react-icons/md";
 import { FaRegHeart } from "react-icons/fa";
 import { FaCartArrowDown } from "react-icons/fa";
+import FaceModal from '../pages/FaceMoal';
 
 
-function Navbar() {
+function Navbar({isShowModal,setIsShowModal}) {
+  // const [isModalOpen, setIsModalOpen] = useState(false);
+
+
+  const toggleModal = () => {
+    setIsShowModal((prev)=>!prev)
+  };
   return (
     <>
     <nav className='fnav'>
@@ -36,11 +43,17 @@ function Navbar() {
         <li>STORE LOCATION</li>
       </ul>
       </div>
-        <img src="https://static1.lenskart.com/media/desktop/img/May22/3dtryon1.png" alt="" />
+      <img
+          src='https://static1.lenskart.com/media/desktop/img/May22/3dtryon1.png'
+          alt=''
+          onClick={toggleModal}
+        />
         <img src="https://static1.lenskart.com/media/desktop/img/Mar22/13-Mar/blulogo.png" alt="" />
         <img src="https://static5.lenskart.com/media/uploads/gold_max_logo_dc.png" alt="" />
         
     </nav>
+    {/* {isModalOpen && <FaceModal toggleModal={toggleModal} />} */}
+
     </>
   )
 }
