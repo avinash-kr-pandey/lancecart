@@ -1,26 +1,27 @@
 import React, { useEffect, useRef, useState } from "react";
-import * as blazeface from "@tensorflow-models/blazeface";
 import Webcam from "react-webcam";
-import * as tf from "@tensorflow/tfjs";
+import { FaceMesh } from "@mediapipe/face_mesh";
+import { Camera } from "@mediapipe/camera_utils";
 
-const FaceModal = ({ selectedGlassesImage, handleClick }) => {
+const FaceModal = ({ selectedGlassesImage }) => {
   const webcamRef = useRef(null);
-  const [model, setModel] = useState(null);
-  const canvasRef = useRef(null);
-  const [glassesMesh, setGlassesMesh] = useState(null);
+  const [faceMesh, setFaceMesh] = useState(null);
+  const [glassesTransform, setGlassesTransform] = useState({ x: 0, y: 0, scale: 1, rotation: 0 });
   const [isLoading, setIsLoading] = useState(true);
-  const [showNewCards, setShowNewCards] = useState(false);
 
   const loadModel = async () => {
-    try {
-      await tf.setBackend("webgl");
-      const loadedModel = await blazeface.load();
-      setModel(loadedModel);
-      setIsLoading(false);
-    } catch (error) {
-      console.error("Error loading model:", error);
-      setIsLoading(false);
-    }
+    const faceMeshModel = new FaceMesh({
+      locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`,
+    });
+    faceMeshModel.setOptions({
+      maxNumFaces: 1,
+      refineLandmarks: true,
+      minDetectionConfidence: 0.5,
+      minTrackingConfidence: 0.5,
+    });
+    faceMeshModel.onResults(onResults);
+    setFaceMesh(faceMeshModel);
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -28,56 +29,48 @@ const FaceModal = ({ selectedGlassesImage, handleClick }) => {
   }, []);
 
   useEffect(() => {
-    const detectAndPositionGlasses = async () => {
-      if (!webcamRef.current || !model) return;
+    if (faceMesh && webcamRef.current) {
+      const video = webcamRef.current.video;
+      const camera = new Camera(video, {
+        onFrame: async () => {
+          await faceMesh.send({ image: video });
+        },
+        width: 640,
+        height: 480,
+      });
+      camera.start();
+    }
+  }, [faceMesh]);
 
-      try {
-        const video = webcamRef.current.video;
-        if (video.readyState !== 4) return;
+  const onResults = (results) => {
+    if (!results.multiFaceLandmarks) return;
 
-        const predictions = await model.estimateFaces(video);
-        if (predictions.length > 0) {
-          const face = predictions[0].topLeft;
-          const width = predictions[0].bottomRight[0] - face[0];
-          const height = predictions[0].bottomRight[1] - face[1];
-          const faceCenter = {
-            x: (face[0] + predictions[0].bottomRight[1]) / 2,
-            y: (face[1] + predictions[0].bottomRight[0]) / 2,
-          };
+    const faceLandmarks = results.multiFaceLandmarks[0];
 
-          const glassesWidth = 170;
-          const glassesHeight = 1000;
+    const leftEye = faceLandmarks[33];
+    const rightEye = faceLandmarks[263];
+    const leftEar = faceLandmarks[130];
+    const rightEar = faceLandmarks[359];
 
-          const glassesOffset = {
-            x: glassesWidth / 2,
-            y: glassesHeight / 4,
-          };
+    const videoWidth = webcamRef.current.video.videoWidth;
+    const videoHeight = webcamRef.current.video.videoHeight;
 
-          const glassesPosition = {
-            x: faceCenter.x - glassesOffset.x,
-            y: faceCenter.y - glassesOffset.y,
-          };
-
-          const scaleMultiplierX = width / glassesWidth;
-          const scaleMultiplierY = height / glassesHeight;
-          const scaleMultiplier = Math.min(scaleMultiplierX, scaleMultiplierY);
-
-          setGlassesMesh({
-            position: glassesPosition,
-            scale: scaleMultiplier,
-          });
-        }
-      } catch (error) {
-        console.error("Error detecting and positioning glasses:", error);
-      }
+    const glassesWidth = (rightEar.x - leftEar.x) * videoWidth;
+    const glassesPosition = {
+      x: (1 - (leftEye.x + rightEye.x) / 2) * videoWidth,
+      y: (leftEye.y + rightEye.y) / 2 * videoHeight,
     };
 
-    const intervalId = setInterval(detectAndPositionGlasses, 120);
-    return () => clearInterval(intervalId);
-  }, [model]);
+    const deltaX = rightEye.x - leftEye.x;
+    const deltaY = rightEye.y - leftEye.y;
+    const rotation = -Math.atan2(deltaY, deltaX) * (180 / Math.PI); 
 
-  const openNewCards = () => {
-    setShowNewCards(true);
+    setGlassesTransform({
+      x: glassesPosition.x,
+      y: glassesPosition.y,
+      scale: glassesWidth / 500,
+      rotation: rotation,
+    });
   };
 
   return (
@@ -85,9 +78,9 @@ const FaceModal = ({ selectedGlassesImage, handleClick }) => {
       <div
         style={{
           position: "relative",
-          margin: "0 37%",
-          width: "50%",
-          height: "50%",
+          margin: "0 auto",
+          width: "640px",
+          height: "480px",
         }}
       >
         {isLoading && (
@@ -105,7 +98,7 @@ const FaceModal = ({ selectedGlassesImage, handleClick }) => {
               zIndex: 2,
             }}
           >
-            <h3 style={{paddingTop:"50px"}}>Loading...</h3>
+            <h3 style={{ paddingTop: "50px" }}>Loading...</h3>
           </div>
         )}
 
@@ -115,37 +108,24 @@ const FaceModal = ({ selectedGlassesImage, handleClick }) => {
               ref={webcamRef}
               autoPlay
               playsInline
-              style={{ width: "500px", height: "500px", borderRadius: "30%" }}
+              style={{ width: "640px", height: "480px", borderRadius: "30%" }}
               mirrored={true}
-            />
-             <canvas
-              ref={canvasRef}
-              style={{
-                width: "800px",
-                height: "800px",
-                position: "absolute",
-                top: 0,
-                left: 0,
-              }} 
             />
           </>
         )}
-        {glassesMesh && (
+        {glassesTransform && (
           <img
             src={selectedGlassesImage}
             alt="Selected Glasses"
             style={{
               position: "absolute",
-              top: glassesMesh.position.y + 180,
-              left: glassesMesh.position.x + 20,
-              transform: `translate(-50%, -50%) scale(${glassesMesh.scale})`,
+              top: glassesTransform.y,
+              left: glassesTransform.x,
+              transform: `translate(-50%, -50%) scale(${glassesTransform.scale}) rotate(${glassesTransform.rotation}deg)`,
+              transition: "transform 0.1s",
             }}
           />
         )}
-        <div style={{ borderBottom: "1px solid rgba(0, 0, 0, 0.2)" }}>
-         
-
-        </div>
       </div>
     </div>
   );
