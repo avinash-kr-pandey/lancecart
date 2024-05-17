@@ -8,6 +8,7 @@ const FaceModal = ({ selectedGlassesImage }) => {
   const [faceMesh, setFaceMesh] = useState(null);
   const [glassesTransform, setGlassesTransform] = useState({ x: 0, y: 0, scale: 1, rotation: 0 });
   const [isLoading, setIsLoading] = useState(true);
+  const [isFaceDetected, setIsFaceDetected] = useState(false);
   const [initialDistance, setInitialDistance] = useState(null);
 
   const loadModel = async () => {
@@ -50,16 +51,18 @@ const FaceModal = ({ selectedGlassesImage }) => {
 
   const onResults = (results) => {
     if (!results.multiFaceLandmarks || results.multiFaceLandmarks.length === 0) {
-      // No face landmarks detected, handle accordingly
+      setIsFaceDetected(false);
       return;
     }
 
     const faceLandmarks = results.multiFaceLandmarks[0];
 
     if (!faceLandmarks || !Array.isArray(faceLandmarks) || faceLandmarks.length < 34) {
-      // Invalid or incomplete face landmarks data, handle accordingly
+      setIsFaceDetected(false);
       return;
     }
+
+    setIsFaceDetected(true);
 
     const leftEye = faceLandmarks[33];
     const rightEye = faceLandmarks[263];
@@ -68,13 +71,12 @@ const FaceModal = ({ selectedGlassesImage }) => {
 
     const videoWidth = webcamRef.current.video.videoWidth;
     const videoHeight = webcamRef.current.video.videoHeight;
-
     const glassesWidth = (rightEar.x - leftEar.x) * videoWidth;
+
     const glassesPosition = {
       x: (1 - (leftEye.x + rightEye.x) / 2) * videoWidth,
       y: (leftEye.y + rightEye.y) / 2 * videoHeight,
     };
-
     const distance = Math.sqrt(Math.pow(rightEye.x - leftEye.x, 2) + Math.pow(rightEye.y - leftEye.y, 2));
     if (!initialDistance) {
       setInitialDistance(distance);
@@ -84,12 +86,12 @@ const FaceModal = ({ selectedGlassesImage }) => {
 
     const deltaX = rightEye.x - leftEye.x;
     const deltaY = rightEye.y - leftEye.y;
-    const rotation = -Math.atan2(deltaY, deltaX) * (180 / Math.PI); // Negative sign to correct rotation direction
+    const rotation = -Math.atan2(deltaY, deltaX) * (180 / Math.PI);
 
     setGlassesTransform({
       x: glassesPosition.x,
       y: glassesPosition.y,
-      scale: glassesWidth / 250 * scaleFactor,
+      scale: glassesWidth / 220 * scaleFactor, 
       rotation: rotation,
     });
   };
@@ -134,7 +136,7 @@ const FaceModal = ({ selectedGlassesImage }) => {
             />
           </>
         )}
-        {glassesTransform && (
+        {isFaceDetected && glassesTransform && (
           <img
             src={selectedGlassesImage}
             alt="Selected Glasses"

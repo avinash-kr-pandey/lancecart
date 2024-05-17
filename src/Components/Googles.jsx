@@ -10,7 +10,7 @@ import sum7 from "../assets/images/glassIMG-7.png"
 import FaceModal from '../pages/FaceMoal';
 
 function Googles({ isShowModal, setIsShowModal }) {
-  const [selectedGlassesImage, setSelectedGlassesImage] = useState(sum7);
+  const [selectedGlassesImage, setSelectedGlassesImage] = useState(sum3);
 
   const handleClick = (image) => {
     setSelectedGlassesImage(image);
