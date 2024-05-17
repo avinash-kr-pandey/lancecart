@@ -8,20 +8,26 @@ const FaceModal = ({ selectedGlassesImage }) => {
   const [faceMesh, setFaceMesh] = useState(null);
   const [glassesTransform, setGlassesTransform] = useState({ x: 0, y: 0, scale: 1, rotation: 0 });
   const [isLoading, setIsLoading] = useState(true);
+  const [initialDistance, setInitialDistance] = useState(null);
 
   const loadModel = async () => {
-    const faceMeshModel = new FaceMesh({
-      locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`,
-    });
-    faceMeshModel.setOptions({
-      maxNumFaces: 1,
-      refineLandmarks: true,
-      minDetectionConfidence: 0.5,
-      minTrackingConfidence: 0.5,
-    });
-    faceMeshModel.onResults(onResults);
-    setFaceMesh(faceMeshModel);
-    setIsLoading(false);
+    try {
+      const faceMeshModel = new FaceMesh({
+        locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`,
+      });
+      faceMeshModel.setOptions({
+        maxNumFaces: 1,
+        refineLandmarks: true,
+        minDetectionConfidence: 0.5,
+        minTrackingConfidence: 0.5,
+      });
+      faceMeshModel.onResults(onResults);
+      setFaceMesh(faceMeshModel);
+      setIsLoading(false);
+    } catch (error) {
+      console.error("Error loading face mesh model:", error);
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -43,9 +49,17 @@ const FaceModal = ({ selectedGlassesImage }) => {
   }, [faceMesh]);
 
   const onResults = (results) => {
-    if (!results.multiFaceLandmarks) return;
+    if (!results.multiFaceLandmarks || results.multiFaceLandmarks.length === 0) {
+      // No face landmarks detected, handle accordingly
+      return;
+    }
 
     const faceLandmarks = results.multiFaceLandmarks[0];
+
+    if (!faceLandmarks || !Array.isArray(faceLandmarks) || faceLandmarks.length < 34) {
+      // Invalid or incomplete face landmarks data, handle accordingly
+      return;
+    }
 
     const leftEye = faceLandmarks[33];
     const rightEye = faceLandmarks[263];
@@ -61,14 +75,21 @@ const FaceModal = ({ selectedGlassesImage }) => {
       y: (leftEye.y + rightEye.y) / 2 * videoHeight,
     };
 
+    const distance = Math.sqrt(Math.pow(rightEye.x - leftEye.x, 2) + Math.pow(rightEye.y - leftEye.y, 2));
+    if (!initialDistance) {
+      setInitialDistance(distance);
+    }
+
+    const scaleFactor = initialDistance ? initialDistance / distance : 1;
+
     const deltaX = rightEye.x - leftEye.x;
     const deltaY = rightEye.y - leftEye.y;
-    const rotation = -Math.atan2(deltaY, deltaX) * (180 / Math.PI); 
+    const rotation = -Math.atan2(deltaY, deltaX) * (180 / Math.PI); // Negative sign to correct rotation direction
 
     setGlassesTransform({
       x: glassesPosition.x,
       y: glassesPosition.y,
-      scale: glassesWidth / 500,
+      scale: glassesWidth / 500 * scaleFactor,
       rotation: rotation,
     });
   };
@@ -122,7 +143,7 @@ const FaceModal = ({ selectedGlassesImage }) => {
               top: glassesTransform.y,
               left: glassesTransform.x,
               transform: `translate(-50%, -50%) scale(${glassesTransform.scale}) rotate(${glassesTransform.rotation}deg)`,
-              transition: "transform 0.1s",
+              transition: "transform 0.1s", // Smooth transition for the glasses
             }}
           />
         )}
