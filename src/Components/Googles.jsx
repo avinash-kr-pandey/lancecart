@@ -1,45 +1,38 @@
 import './Googles.css';
-import React, { useState, useRef, useEffect } from "react";
-import * as tf from "@tensorflow/tfjs";
-import "@tensorflow/tfjs-backend-webgl";
-import * as THREE from "three";
-import sum from "../assets/images/Glasses-PNG-Pic.png"
-import sum2 from "../assets/images/glasses.png"
-import sum3 from "../assets/images/sunglass3.png"
-import sum4 from "../assets/images/sunglasses.5de64473f35e956f53e7.png"
-import sum5 from "../assets/images/sunglasses.png"
+import React, { useState } from "react";
+import sum from "../assets/images/glass-1.png";
+import sum2 from "../assets/images/glass-2.png";
+import sum3 from "../assets/images/glass-3.png";
+import sum4 from "../assets/images/glass-4.png";
+import sum5 from "../assets/images/Glasses--5.png";
+import sum6 from "../assets/images/sunglass-3.png"
+import sum7 from "../assets/images/glassIMG-7.png"
 import FaceModal from '../pages/FaceMoal';
 
-function Googles({isShowModal,setIsShowModal}) {
-  const [selectedGlassesImage, setSelectedGlassesImage] = useState(sum5);
- 
+function Googles({ isShowModal, setIsShowModal }) {
+  const [selectedGlassesImage, setSelectedGlassesImage] = useState(sum7);
 
   const handleClick = (image) => {
     setSelectedGlassesImage(image);
   };
 
-
-  
-
-  
-       
   return (
     <>
-    {isShowModal && <FaceModal selectedGlassesImage={selectedGlassesImage} handleClick={handleClick} />}
-      <section className='cardbox'>
-        <div className="card p-[8]" onClick={() => handleClick("https://www.textures4photoshop.com/tex/thumbs/glasses-PNG-transparent-thumb23.png")}>
+      {isShowModal && <FaceModal selectedGlassesImage={selectedGlassesImage} handleClick={handleClick} />}
+      <section className='cardbox' style={{paddingTop:'10vh'}}>
+        <div className="card p-[8]" onClick={() => handleClick(sum6)} style={{ boxShadow: 'none' }}>
           <div className="imgbox">
-            <img src={sum5} />
+            <img className='boximg' src={sum6} alt="Eye Glasses" style={{ boxShadow: 'none', border: 'none', width: '100%', height: 'auto' }} />
           </div>
           <div className="content">
             <p className='name'>Eye Glasses</p>
             <p className='price'>Starting Rs1200</p>
             <button className='viewall'>View All</button>
-          </div> 
+          </div>
         </div>
-        <div className="card" onClick={() => handleClick("https://static.vecteezy.com/system/resources/thumbnails/021/353/354/small/metal-frame-geek-glasses-flat-symbol-icon-illustration-png.png")}>
-          <div className="imgbox">
-            <img src={sum} />
+        <div className="card" onClick={() => handleClick(sum)}>
+          <div className="imgbox ">
+            <img className='boximg' src={sum} alt="Sun Glasses" style={{ boxShadow: 'none', border: 'none', width: '100%', height: 'auto' }} />
           </div>
           <div className="content">
             <p className='name'>Sun Glasses</p>
@@ -47,9 +40,9 @@ function Googles({isShowModal,setIsShowModal}) {
             <button className='viewall'>View All</button>
           </div>
         </div>
-        <div className="card" onClick={() => handleClick("https://pngimg.com/uploads/glasses/small/glasses_PNG54320.png")}>
+        <div className="card" onClick={() => handleClick(sum2)}>
           <div className="imgbox">
-            <img src={sum2} />
+            <img className='boximg' src={sum2} alt="Computer Glasses" style={{ boxShadow: 'none', border: 'none', width: '100%', height: 'auto' }} />
           </div>
           <div className="content">
             <p className='name'>Computer Glasses</p>
@@ -57,9 +50,9 @@ function Googles({isShowModal,setIsShowModal}) {
             <button className='viewall'>View All</button>
           </div>
         </div>
-        <div className="card" onClick={() => handleClick("https://www.freepnglogos.com/uploads/glasses-png/eye-eyeglasses-glass-glasses-look-shades-specs-31.png")}>
+        <div className="card" onClick={() => handleClick(sum3)}>
           <div className="imgbox">
-            <img src={sum3} />
+            <img className='boximg' src={sum3} alt="Power Sunglasses" style={{ boxShadow: 'none', border: 'none', width: '100%', height: 'auto' }} />
           </div>
           <div className="content">
             <p className='name'>Power Sunglasses</p>
@@ -67,10 +60,9 @@ function Googles({isShowModal,setIsShowModal}) {
             <button className='viewall'>View All</button>
           </div>
         </div>
-
-        <div className="card" onClick={() => handleClick("https://static.vecteezy.com/system/resources/thumbnails/021/353/354/small/metal-frame-geek-glasses-flat-symbol-icon-illustration-png.png")}>
+        <div className="card" onClick={() => handleClick(sum4)}>
           <div className="imgbox">
-            <img src={sum4} />
+            <img className='boximg' src={sum4} alt="Progressive Lenses" style={{ boxShadow: 'none', border: 'none', width: '100%', height: 'auto' }} />
           </div>
           <div className="content">
             <p className='name'>Progressive Lenses</p>
@@ -78,7 +70,6 @@ function Googles({isShowModal,setIsShowModal}) {
             <button className='viewall'>View All</button>
           </div>
         </div>
-        
       </section>
     </>
   );

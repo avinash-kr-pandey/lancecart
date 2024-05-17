@@ -89,7 +89,7 @@ const FaceModal = ({ selectedGlassesImage }) => {
     setGlassesTransform({
       x: glassesPosition.x,
       y: glassesPosition.y,
-      scale: glassesWidth / 500 * scaleFactor,
+      scale: glassesWidth / 250 * scaleFactor,
       rotation: rotation,
     });
   };
@@ -143,7 +143,7 @@ const FaceModal = ({ selectedGlassesImage }) => {
               top: glassesTransform.y,
               left: glassesTransform.x,
               transform: `translate(-50%, -50%) scale(${glassesTransform.scale}) rotate(${glassesTransform.rotation}deg)`,
-              transition: "transform 0.1s", // Smooth transition for the glasses
+              transition: "transform 0.1s",
             }}
           />
         )}
