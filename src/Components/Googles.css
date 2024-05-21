@@ -16,9 +16,9 @@
     cursor: pointer;
     
 }
-.card:hover{
+/* .card:hover{
     height: 350px;
-}
+} */
 .imgbox{
     position: relative;
     width: 100%;
