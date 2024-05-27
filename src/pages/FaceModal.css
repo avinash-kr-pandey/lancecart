@@ -5,8 +5,8 @@
   .webcam-wrapper {
     position: relative;
     margin: 0 auto;
-    width: 640px;
-    height: 480px;
+    width: 20vw;
+    height: 48vh;
   }
   
   .loading-overlay {
