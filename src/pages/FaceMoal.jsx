@@ -132,7 +132,7 @@ const FaceModal = ({ selectedGlassesImage }) => {
               ref={webcamRef}
               autoPlay
               playsInline
-              style={{ width: "640px", height: "480px", borderRadius: "30%" }}
+              style={{ width: "640px", height: "480px" }}
               mirrored={true}
             />
           </>
