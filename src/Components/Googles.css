@@ -1,105 +1,131 @@
-.cardbox{
-    display: flex;
-   margin: 30px;
-   column-gap: 30px;
-}
-.card{
-    position: relative;
-    width: 300px;
-    height: 200px;
-    border-radius: 10px;
-    box-shadow: 0px 5px 20px rgb(0,0,0,0.5);
-    transition: 0.3s;
-    padding: 30px 50px;
-    background: #fff;
-    margin-top: 20px;
-    cursor: pointer;
-    
-}
-/* .card:hover{
-    height: 350px;
-} */
-.imgbox{
-    position: relative;
-    width: 100%;
-    height: 100%;
-    transform: translateY(-50px);
-    z-index: 99;
-    
-}
-/* img{
-    width: 100%;
-    border-radius: 10px;
-    box-shadow: 0px 5px 20px rgb(0,0,0,0.5);
-} */
-.content{
-    padding: 5px 10px;
-    transform: translateY(-100px);
-    opacity: 0;
-    font-size: larger;
-}
-.card:hover > .content{
-    opacity: 1;
-    transform: translateY(-40px);
-}
-.name{
-    color: blue;
-    text-align: center;
-    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-}
-.viewall{
-    width: 100px;
-    height: 35px;
-    color: white;
-    background-color: rgb(52,180,180);
-    border-radius: 7px;
-    border: none;
-    font-size: 20px;
-    font-weight: 600;
-}
-.price{
-    color: rgb(90, 13, 161);
-    text-align: center;
-    
-}
-/* Ensure no shadows for the images */
-.imgbox img {
-    mix-blend-mode: multiply;
-  box-shadow: none; /* Remove any box shadow */
-  background: transparent; /* Ensure the background is transparent */
-  border: none; /* Remove any border if present */
-}
-
-/* Additional styles for better presentation */
-.imgbox {
+/* Main styles for the cardbox and cards */
+.cardbox {
   display: flex;
-  justify-content: center;
-  align-items: center;
+  flex-wrap: wrap;
+  margin: 30px;
+  gap: 30px;
+  justify-content: center; /* Center cards */
 }
 
 .card {
-  display: inline-block;
-  margin: 10px;
-  padding: 10px;
-  border: 1px solid #ddd; 
-  border-radius: 4px; 
-  box-shadow: none; 
-}
-
-.card .content {
-  text-align: center;
-}
-
-.card .viewall {
-  margin-top: 10px;
-  padding: 5px 10px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
+  position: relative;
+  width: calc(33.33% - 60px); /* Three cards per row by default */
+  height: 200px;
+  border-radius: 10px;
+  box-shadow: 0px 5px 20px rgb(0, 0, 0, 0.5);
+  transition: 0.3s;
+  padding: 30px 50px;
+  background: #fff;
+  margin-top: 20px;
   cursor: pointer;
 }
 
-.card .viewall:hover {
-  background-color: #0056b3;
+.imgbox {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transform: translateY(-50px);
+  z-index: 99;
+}
+
+.imgbox img {
+  mix-blend-mode: multiply;
+  box-shadow: none;
+  background: transparent;
+  border: none;
+  width: 50%;
+  height: auto;
+}
+
+.content {
+  padding: 5px 10px;
+  transform: translateY(-100px);
+  opacity: 0;
+  font-size: larger;
+}
+
+.card:hover > .content {
+  opacity: 1;
+  transform: translateY(-40px);
+}
+
+.name {
+  color: blue;
+  text-align: center;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+.viewall {
+  width: 100px;
+  height: 35px;
+  color: white;
+  background-color: rgb(52, 180, 180);
+  border-radius: 7px;
+  border: none;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.price {
+  color: rgb(90, 13, 161);
+  text-align: center;
+}
+
+.cardbox {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 30px;
+  column-gap: 30px;
+  row-gap: 20px;
+}
+
+.card {
+  flex: 1 1 calc(33.33% - 60px); /* Default to 3 cards per row */
+  box-shadow: 0px 5px 20px rgb(0, 0, 0, 0.5);
+  transition: 0.3s;
+  padding: 30px 50px;
+  background: #fff;
+  margin-top: 20px;
+  cursor: pointer;
+  max-width: calc(33.33% - 60px); /* Ensure cards don't get too wide */
+}
+
+/* Media Queries for responsiveness */
+@media (max-width: 1024px) {
+  .card {
+    flex: 1 1 calc(50% - 60px); /* 2 cards per row */
+    max-width: calc(50% - 60px);
+  }
+}
+
+@media (max-width: 768px) {
+  .card {
+    flex: 1 1 calc(100% - 60px); /* 1 card per row */
+    max-width: calc(100% - 60px);
+  }
+}
+
+@media (max-width: 480px) {
+  .cardbox {
+    margin: 15px;
+    column-gap: 15px;
+    row-gap: 10px;
+  }
+
+  .card {
+    padding: 20px 30px;
+  }
+
+  .content {
+    font-size: medium;
+  }
+
+  .viewall {
+    width: 80px;
+    height: 30px;
+    font-size: 16px;
+  }
 }

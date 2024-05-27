@@ -5,8 +5,8 @@ import sum2 from "../assets/images/glass-2.png";
 import sum3 from "../assets/images/glass-3.png";
 import sum4 from "../assets/images/glass-4.png";
 import sum5 from "../assets/images/Glasses--5.png";
-import sum6 from "../assets/images/sunglass-3.png"
-import sum7 from "../assets/images/glasses.png"
+import sum6 from "../assets/images/sunglass-3.png";
+import sum7 from "../assets/images/glasses.png";
 import FaceModal from '../pages/FaceMoal';
 
 function Googles({ isShowModal, setIsShowModal }) {
